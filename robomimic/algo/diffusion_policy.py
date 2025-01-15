@@ -27,7 +27,7 @@ import robomimic.utils.torch_utils as TorchUtils
 import robomimic.utils.tensor_utils as TensorUtils
 import robomimic.utils.obs_utils as ObsUtils
 import os
-
+import json
 
 from transformers import AutoTokenizer, AutoModel
 tokenizer = AutoTokenizer.from_pretrained('distilbert-base-uncased')
@@ -84,12 +84,35 @@ class DiffusionPolicyUNet(PolicyAlgo):
         obs_encoder = replace_bn_with_gn(obs_encoder)
         
         obs_dim = obs_encoder.output_shape()[0]
-
-        # create network object
-        noise_pred_net = ConditionalUnet1D(
-            input_dim=self.ac_dim,
-            global_cond_dim=obs_dim*self.algo_config.horizon.observation_horizon
-        )
+        
+        if self.algo_config.skill.enabled:
+            self.skill_dim = self.algo_config.skill.skill_dim
+                
+            noise_pred_net = ConditionalUnet1D(
+                input_dim=self.ac_dim,
+                global_cond_dim=obs_dim*self.algo_config.horizon.observation_horizon + self.skill_dim
+            )
+        # elif self.algo_config.lang.enabled:
+        #     # language condition
+        #     self.lang_dim = self.algo_config.lang.lang_dim
+        #     noise_pred_net = ConditionalUnet1D(
+        #         input_dim=self.ac_dim,
+        #         global_cond_dim=obs_dim*self.algo_config.horizon.observation_horizon + self.lang_dim
+        #     )
+        elif self.algo_config.subgoal.enabled:
+            # language condition
+            
+            self.subgoal_dim = self.algo_config.subgoal.subgoal_dim
+            noise_pred_net = ConditionalUnet1D(
+                input_dim=self.ac_dim,
+                global_cond_dim=obs_dim*self.algo_config.horizon.observation_horizon + self.subgoal_dim * 2 # NOTE 2 cameras
+            )
+        else:
+            # create network object
+            noise_pred_net = ConditionalUnet1D(
+                input_dim=self.ac_dim,
+                global_cond_dim=obs_dim*self.algo_config.horizon.observation_horizon
+            )
 
         # the final arch has 2 parts
         nets = nn.ModuleDict({
@@ -100,6 +123,10 @@ class DiffusionPolicyUNet(PolicyAlgo):
         })
 
         nets = nets.float().to(self.device)
+        
+        json_path = '/workspace/datasets/droid/1.0.0/rlds2mp4.json'
+        with open(json_path, 'r') as f:
+            self.rlds2mp4 = json.load(f)
         
         # setup noise scheduler
         noise_scheduler = None
@@ -154,8 +181,16 @@ class DiffusionPolicyUNet(PolicyAlgo):
 
         input_batch = dict()
 
+        droid_path = batch["obs"]["droid_path"]
+        chunk_indices = batch["obs"]["chunk_indices"]
+        
+        del batch["obs"]["droid_path"]
+        del batch["obs"]["chunk_indices"]
+        
+        # batch["obs"]['droid_path'][0].decode("utf-8")
         ## Semi-hacky fix which does the filtering for raw language which is just a list of lists of strings
         input_batch["obs"] = {k: batch["obs"][k][:, :To, :] for k in batch["obs"] if "raw" not in k }
+        input_batch['goal'] = batch['goal']
         if "lang_fixed/language_raw" in batch["obs"].keys():
             str_ls = list(batch['obs']['lang_fixed/language_raw'][0])
             input_batch["obs"]["lang_fixed/language_raw"] = [str_ls] * To
@@ -236,6 +271,12 @@ class DiffusionPolicyUNet(PolicyAlgo):
             obs_features = TensorUtils.time_distributed({"obs":inputs["obs"]}, self.nets['policy']['obs_encoder'], inputs_as_kwargs=True)
             assert obs_features.ndim == 3  # [B, T, D]
             obs_cond = obs_features.flatten(start_dim=1)
+            
+            if self.algo_config.subgoal.enabled:
+                primary_feature = self.nets['policy']['obs_encoder'].module.nets['obs'].obs_nets['camera/image/varied_camera_1_left_image'](batch['goal']['image_primary'].permute(0,3,1,2))
+                secondary_feature = self.nets['policy']['obs_encoder'].module.nets['obs'].obs_nets['camera/image/varied_camera_2_left_image'](batch['goal']['image_secondary'].permute(0,3,1,2))
+                subgoal_feature = torch.cat([primary_feature, secondary_feature], axis=-1)
+                obs_cond = torch.cat([obs_cond, subgoal_feature], axis=-1)
 
             num_noise_samples = self.algo_config.noise_samples
 

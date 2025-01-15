@@ -1,0 +1,345 @@
+{
+    "algo_name": "diffusion_policy",
+    "experiment": {
+        "name": "bz_128_noise_samples_8_sample_weights_1_dataset_names_droid_cams_2cams_goal_mode_None_truncated_geom_factor_0.3_ldkeys_proprio-lang_visenc_VisualCore_fuser_None",
+        "validate": false,
+        "logging": {
+            "terminal_output_to_txt": true,
+            "log_tb": true,
+            "log_wandb": true,
+            "wandb_proj_name": "droid_reproduce_lang"
+        },
+        "mse": {
+            "enabled": true,
+            "every_n_epochs": 10,
+            "on_save_ckpt": true,
+            "num_samples": 6,
+            "visualize": true
+        },
+        "save": {
+            "enabled": true,
+            "every_n_seconds": null,
+            "every_n_epochs": 50,
+            "epochs": [],
+            "on_best_validation": false,
+            "on_best_rollout_return": false,
+            "on_best_rollout_success_rate": true
+        },
+        "epoch_every_n_steps": 500,
+        "validation_epoch_every_n_steps": 10,
+        "env": null,
+        "additional_envs": null,
+        "render": false,
+        "render_video": true,
+        "keep_all_videos": false,
+        "video_skip": 5,
+        "rollout": {
+            "enabled": false,
+            "n": 50,
+            "horizon": 400,
+            "rate": 40,
+            "warmstart": 0,
+            "terminate_on_success": true
+        }
+    },
+    "train": {
+        "data": null,
+        "output_dir": "output/droid/im/diffusion_policy/12-31-None",
+        "num_data_workers": 4,
+        "hdf5_cache_mode": "low_dim",
+        "hdf5_use_swmr": true,
+        "hdf5_load_next_obs": false,
+        "hdf5_normalize_obs": false,
+        "hdf5_filter_key": null,
+        "seq_length": 15,
+        "pad_seq_length": true,
+        "frame_stack": 2,
+        "pad_frame_stack": true,
+        "dataset_keys": [],
+        "goal_mode": null,
+        "truncated_geom_factor": 0.3,
+        "subsample_length": 100,
+        "num_parallel_calls": 200,
+        "traj_transform_threads": 48,
+        "traj_read_threads": 48,
+        "cuda": true,
+        "batch_size": 128,
+        "num_epochs": 100000,
+        "seed": 1,
+        "data_format": "droid_rlds",
+        "data_path": "/workspace/datasets",
+        "shuffle_buffer_size": 100,
+        "sample_weights": [
+            1
+        ],
+        "dataset_names": [
+            "droid"
+        ],
+        "action_keys": [
+            "action/abs_pos",
+            "action/abs_rot_6d",
+            "action/gripper_position"
+        ],
+        "action_shapes": [
+            [
+                1,
+                3
+            ],
+            [
+                1,
+                6
+            ],
+            [
+                1,
+                1
+            ]
+        ],
+        "action_config": {
+            "action/cartesian_position": {
+                "normalization": "min_max"
+            },
+            "action/abs_pos": {
+                "normalization": "min_max"
+            },
+            "action/abs_rot_6d": {
+                "normalization": "min_max",
+                "format": "rot_6d",
+                "convert_at_runtime": "rot_euler"
+            },
+            "action/abs_rot_euler": {
+                "normalization": "min_max",
+                "format": "rot_euler"
+            },
+            "action/gripper_position": {
+                "normalization": "min_max"
+            },
+            "action/cartesian_velocity": {
+                "normalization": null
+            },
+            "action/rel_pos": {
+                "normalization": null
+            },
+            "action/rel_rot_6d": {
+                "format": "rot_6d",
+                "normalization": null,
+                "convert_at_runtime": "rot_euler"
+            },
+            "action/rel_rot_euler": {
+                "format": "rot_euler",
+                "normalization": null
+            },
+            "action/gripper_velocity": {
+                "normalization": null
+            }
+        },
+        "shuffled_obs_key_groups": [
+            [
+                [
+                    "camera/image/varied_camera_1_left_image",
+                    "camera/image/varied_camera_1_right_image",
+                    "camera/extrinsics/varied_camera_1_left",
+                    "camera/extrinsics/varied_camera_1_right"
+                ],
+                [
+                    "camera/image/varied_camera_2_left_image",
+                    "camera/image/varied_camera_2_right_image",
+                    "camera/extrinsics/varied_camera_2_left",
+                    "camera/extrinsics/varied_camera_2_right"
+                ]
+            ]
+        ]
+    },
+    "algo": {
+        "optim_params": {
+            "policy": {
+                "learning_rate": {
+                    "initial": 0.0001,
+                    "decay_factor": 0.1,
+                    "epoch_schedule": []
+                },
+                "regularization": {
+                    "L2": 0.0
+                }
+            }
+        },
+        "horizon": {
+            "observation_horizon": 2,
+            "action_horizon": 8,
+            "prediction_horizon": 16
+        },
+        "unet": {
+            "enabled": true,
+            "diffusion_step_embed_dim": 256,
+            "down_dims": [
+                256,
+                512,
+                1024
+            ],
+            "kernel_size": 5,
+            "n_groups": 8
+        },
+        "ema": {
+            "enabled": true,
+            "power": 0.75
+        },
+        "ddpm": {
+            "enabled": false,
+            "num_train_timesteps": 100,
+            "num_inference_timesteps": 100,
+            "beta_schedule": "squaredcos_cap_v2",
+            "clip_sample": true,
+            "prediction_type": "epsilon"
+        },
+        "ddim": {
+            "enabled": true,
+            "num_train_timesteps": 100,
+            "num_inference_timesteps": 10,
+            "beta_schedule": "squaredcos_cap_v2",
+            "clip_sample": true,
+            "set_alpha_to_one": true,
+            "steps_offset": 0,
+            "prediction_type": "epsilon"
+        },
+        "noise_samples": 8
+    },
+    "observation": {
+        "modalities": {
+            "obs": {
+                "low_dim": [
+                    "robot_state/cartesian_position",
+                    "robot_state/gripper_position"
+                ],
+                "rgb": [
+                    "camera/image/varied_camera_1_left_image",
+                    "camera/image/varied_camera_2_left_image"
+                ],
+                "depth": [],
+                "scan": []
+            },
+            "goal": {
+                "low_dim": [],
+                "rgb": [],
+                "depth": [],
+                "scan": []
+            }
+        },
+        "encoder": {
+            "low_dim": {
+                "core_class": null,
+                "core_kwargs": {},
+                "obs_randomizer_class": null,
+                "obs_randomizer_kwargs": {}
+            },
+            "rgb": {
+                "core_class": "VisualCore",
+                "core_kwargs": {
+                    "feature_dimension": 512,
+                    "backbone_class": "ResNet50Conv",
+                    "backbone_kwargs": {
+                        "pretrained": true,
+                        "input_coord_conv": false,
+                        "use_cam": false,
+                        "downsample": false
+                    },
+                    "pool_class": null,
+                    "pool_kwargs": null,
+                    "flatten": true
+                },
+                "obs_randomizer_class": [
+                    "ColorRandomizer",
+                    "CropRandomizer"
+                ],
+                "obs_randomizer_kwargs": [
+                    {},
+                    {
+                        "crop_height": 116,
+                        "crop_width": 116,
+                        "num_crops": 1,
+                        "pos_enc": false
+                    }
+                ],
+                "fuser": null
+            },
+            "depth": {
+                "core_class": "VisualCore",
+                "core_kwargs": {},
+                "obs_randomizer_class": null,
+                "obs_randomizer_kwargs": {}
+            },
+            "scan": {
+                "core_class": "ScanCore",
+                "core_kwargs": {},
+                "obs_randomizer_class": null,
+                "obs_randomizer_kwargs": {}
+            }
+        },
+        "image_dim": [
+            128,
+            128
+        ]
+    },
+    "meta": {
+        "hp_base_config_file": "/workspace/droid_policy_learning/robomimic/exps/templates/diffusion_policy.json",
+        "hp_keys": [
+            "bz",
+            "subsample_length",
+            "num_parallel_calls",
+            "traj_transform_threads",
+            "traj_read_threads",
+            "noise_samples",
+            "ddim",
+            "ddpm",
+            "sample_weights",
+            "dataset_names",
+            "ac_keys",
+            "ac_shapes",
+            "cams",
+            "obsrand",
+            "obsrandargs",
+            "goal_mode",
+            "truncated_geom_factor",
+            "ldkeys",
+            "visenc",
+            "visdim",
+            "flatten",
+            "fuser"
+        ],
+        "hp_values": [
+            128,
+            100,
+            200,
+            48,
+            48,
+            "8",
+            true,
+            false,
+            [
+                1
+            ],
+            "droid",
+            "abs",
+            "ac_shapes",
+            "2cams",
+            [
+                "ColorRandomizer",
+                "CropRandomizer"
+            ],
+            [
+                {},
+                {
+                    "crop_height": 116,
+                    "crop_width": 116,
+                    "num_crops": 1,
+                    "pos_enc": false
+                }
+            ],
+            null,
+            0.3,
+            "proprio-lang",
+            "VisualCore",
+            512,
+            true,
+            null
+        ]
+    }
+}
