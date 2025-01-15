@@ -1,0 +1,9 @@
+# pyc
+**/__pycache__/*
+**/*.pyc
+
+# log
+*.log
+*.wandb
+robomimic/output/*
+/workspace/droid_policy_learning/robomimic/__pycache__/
