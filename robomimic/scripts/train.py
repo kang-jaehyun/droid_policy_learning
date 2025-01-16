@@ -44,7 +44,7 @@ from robomimic.utils.dataset import action_stats_to_normalization_stats
 from robomimic.config import config_factory
 from robomimic.algo import algo_factory, RolloutPolicy
 from robomimic.utils.log_utils import PrintLogger, DataLogger, flush_warnings
-from robomimic.utils.rlds_utils import droid_dataset_transform, robomimic_transform, DROID_TO_RLDS_OBS_KEY_MAP, DROID_TO_RLDS_LOW_DIM_OBS_KEY_MAP, TorchRLDSDataset
+from robomimic.utils.rlds_utils import droid_dataset_transform, robomimic_transform_doublecam,robomimic_transform_singlecam, DROID_TO_RLDS_OBS_KEY_MAP, DROID_TO_RLDS_LOW_DIM_OBS_KEY_MAP, TorchRLDSDataset
 
 from octo.data.dataset import make_dataset_from_rlds, make_interleaved_dataset
 from octo.data.utils.data_utils import combine_dataset_statistics
@@ -90,14 +90,20 @@ def train(config, device):
 
         obs_modalities = config.observation.modalities.obs.rgb
         # NOTE: Must be 2 cam for now, can clean this up later
-        assert(len(obs_modalities) == 2)
+        # assert(len(obs_modalities) == 2)
+
         ac_dim = sum([ac_comp[1] for ac_comp in config.train.action_shapes])
         action_config = config.train.action_config
         is_abs_action = [True] * ac_dim
 
+        if len(obs_modalities) == 1:
+            imagekeys = {"primary": DROID_TO_RLDS_OBS_KEY_MAP[obs_modalities[0]]}
+        elif len(obs_modalities) == 2:
+            imagekeys = {"primary": DROID_TO_RLDS_OBS_KEY_MAP[obs_modalities[0]], "secondary": DROID_TO_RLDS_OBS_KEY_MAP[obs_modalities[1]]}
+
         BASE_DATASET_KWARGS = {
                 "data_dir": config.train.data_path,
-                "image_obs_keys": {"primary": DROID_TO_RLDS_OBS_KEY_MAP[obs_modalities[0]], "secondary": DROID_TO_RLDS_OBS_KEY_MAP[obs_modalities[1]]},
+                "image_obs_keys": {"primary": DROID_TO_RLDS_OBS_KEY_MAP["camera/image/varied_camera_1_left_image"], "secondary": DROID_TO_RLDS_OBS_KEY_MAP["camera/image/varied_camera_2_left_image"]},
                 "state_obs_keys": [DROID_TO_RLDS_LOW_DIM_OBS_KEY_MAP[obs_key] for obs_key in config.observation.modalities.obs.low_dim],
                 "language_key": "language_instruction",
                 "norm_skip_keys":  ["proprio"],
@@ -153,8 +159,14 @@ def train(config, device):
         rlds_dataset_stats = dataset.dataset_statistics[0] if isinstance(dataset.dataset_statistics, list) else dataset.dataset_statistics
         action_stats = ActionUtils.get_action_stats_dict(rlds_dataset_stats["action"], config.train.action_keys, config.train.action_shapes)
         action_normalization_stats = action_stats_to_normalization_stats(action_stats, action_config)
-        dataset = dataset.map(robomimic_transform, num_parallel_calls=config.train.traj_transform_threads)
-
+        
+        if len(obs_modalities) == 1:
+            dataset = dataset.map(robomimic_transform_singlecam, num_parallel_calls=config.train.traj_transform_threads)
+        elif len(obs_modalities) == 2:
+            dataset = dataset.map(robomimic_transform_doublecam, num_parallel_calls=config.train.traj_transform_threads)
+        else:
+            raise NotImplementedError("Only 1 or 2 camera observations are supported for now")
+        
         pytorch_dataset = TorchRLDSDataset(dataset)
         train_loader = DataLoader(
             pytorch_dataset,

@@ -161,6 +161,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
         self.action_check_done = False
         self.obs_queue = None
         self.action_queue = None
+        self.num_cameras = None
     
     def process_batch_for_training(self, batch):
         """
@@ -214,6 +215,11 @@ class DiffusionPolicyUNet(PolicyAlgo):
                 raise ValueError('"actions" must be in range [-1,1] for Diffusion Policy! Check if hdf5_normalize_action is enabled.')
             self.action_check_done = True
 
+        if self.num_cameras is None:
+            self.num_cameras = 0
+            for key in input_batch["obs"]:
+                if "camera" in key:
+                    self.num_cameras += 1
         ## LOGGING HOW MANY NANs there are
         # bz = input_batch["actions"].shape[0]
         # nanamt = torch.BoolTensor([False] * bz)
@@ -273,9 +279,13 @@ class DiffusionPolicyUNet(PolicyAlgo):
             obs_cond = obs_features.flatten(start_dim=1)
             
             if self.algo_config.subgoal.enabled:
-                primary_feature = self.nets['policy']['obs_encoder'].module.nets['obs'].obs_nets['camera/image/varied_camera_1_left_image'](batch['goal']['image_primary'].permute(0,3,1,2))
-                secondary_feature = self.nets['policy']['obs_encoder'].module.nets['obs'].obs_nets['camera/image/varied_camera_2_left_image'](batch['goal']['image_secondary'].permute(0,3,1,2))
-                subgoal_feature = torch.cat([primary_feature, secondary_feature], axis=-1)
+                if self.num_cameras == 2:
+                    primary_feature = self.nets['policy']['obs_encoder'].module.nets['obs'].obs_nets['camera/image/varied_camera_1_left_image'](batch['goal']['image_primary'].permute(0,3,1,2))
+                    secondary_feature = self.nets['policy']['obs_encoder'].module.nets['obs'].obs_nets['camera/image/varied_camera_2_left_image'](batch['goal']['image_secondary'].permute(0,3,1,2))
+                    subgoal_feature = torch.cat([primary_feature, secondary_feature], axis=-1)
+                else:
+                    subgoal_feature = self.nets['policy']['obs_encoder'].module.nets['obs'].obs_nets['camera/image/varied_camera_1_left_image'](batch['goal']['image_primary'].permute(0,3,1,2))
+                
                 obs_cond = torch.cat([obs_cond, subgoal_feature], axis=-1)
 
             num_noise_samples = self.algo_config.noise_samples

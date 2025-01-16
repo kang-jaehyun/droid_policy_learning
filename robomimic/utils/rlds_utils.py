@@ -39,13 +39,33 @@ def droid_dataset_transform(trajectory: Dict[str, Any]) -> Dict[str, Any]:
     return trajectory
 
 
-def robomimic_transform(trajectory: Dict[str, Any]) -> Dict[str, Any]:
+def robomimic_transform_doublecam(trajectory: Dict[str, Any]) -> Dict[str, Any]:
     return {
         "obs": {
             "camera/image/varied_camera_1_left_image": 
                 tf.cast(trajectory["observation"]["image_primary"], tf.float32) / 255.,
             "camera/image/varied_camera_2_left_image": 
                 tf.cast(trajectory["observation"]["image_secondary"], tf.float32) / 255.,
+            # "raw_language": trajectory["task"]["language_instruction"],
+            
+            "droid_path": trajectory["metadata"],
+            "robot_state/cartesian_position": trajectory["observation"]["proprio"][..., :6],
+            "robot_state/gripper_position": trajectory["observation"]["proprio"][..., -1:],
+            "pad_mask": trajectory["observation"]["pad_mask"][..., None],
+            "chunk_indices": trajectory["chunk_indices"],
+        },
+        "goal":{
+            "image_primary": tf.cast(trajectory["task"]['image_primary'], tf.float32) / 255.,
+            "image_secondary": tf.cast(trajectory["task"]['image_secondary'], tf.float32) / 255.
+        },
+        "actions": trajectory["action"][1:],
+    }
+
+def robomimic_transform_singlecam(trajectory: Dict[str, Any]) -> Dict[str, Any]:
+    return {
+        "obs": {
+            "camera/image/varied_camera_1_left_image": 
+                tf.cast(trajectory["observation"]["image_primary"], tf.float32) / 255.,
             # "raw_language": trajectory["task"]["language_instruction"],
             
             "droid_path": trajectory["metadata"],
