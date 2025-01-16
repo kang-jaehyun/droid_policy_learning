@@ -204,7 +204,8 @@
             "steps_offset": 0,
             "prediction_type": "epsilon"
         },
-        "noise_samples": 8
+        "noise_samples": 8,
+        "num_cameras": 1
     },
     "observation": {
         "modalities": {

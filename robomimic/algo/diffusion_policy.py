@@ -105,7 +105,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
             self.subgoal_dim = self.algo_config.subgoal.subgoal_dim
             noise_pred_net = ConditionalUnet1D(
                 input_dim=self.ac_dim,
-                global_cond_dim=obs_dim*self.algo_config.horizon.observation_horizon + self.subgoal_dim * 2 # NOTE 2 cameras
+                global_cond_dim=obs_dim*self.algo_config.horizon.observation_horizon + self.subgoal_dim * self.algo_config.num_cameras
             )
         else:
             # create network object
@@ -161,7 +161,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
         self.action_check_done = False
         self.obs_queue = None
         self.action_queue = None
-        self.num_cameras = None
+        self.num_cameras = self.algo_config.num_cameras
     
     def process_batch_for_training(self, batch):
         """
@@ -215,11 +215,6 @@ class DiffusionPolicyUNet(PolicyAlgo):
                 raise ValueError('"actions" must be in range [-1,1] for Diffusion Policy! Check if hdf5_normalize_action is enabled.')
             self.action_check_done = True
 
-        if self.num_cameras is None:
-            self.num_cameras = 0
-            for key in input_batch["obs"]:
-                if "camera" in key:
-                    self.num_cameras += 1
         ## LOGGING HOW MANY NANs there are
         # bz = input_batch["actions"].shape[0]
         # nanamt = torch.BoolTensor([False] * bz)
