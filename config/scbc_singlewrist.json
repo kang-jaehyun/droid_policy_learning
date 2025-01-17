@@ -1,7 +1,7 @@
 {
     "algo_name": "diffusion_policy",
     "experiment": {
-        "name": "droid_gcbc",
+        "name": "droid_scbc_singlewrist",
         "validate": false,
         "logging": {
             "terminal_output_to_txt": true,
@@ -44,7 +44,7 @@
     },
     "train": {
         "data": null,
-        "output_dir": "output/droid/droid_gcbc",
+        "output_dir": "output/droid/droid_scbc_singlewrist",
         "num_data_workers": 4,
         "hdf5_cache_mode": null,
         "hdf5_use_swmr": true,
@@ -162,8 +162,14 @@
                 }
             }
         },
-        "subgoal": {
+        "skill":{
             "enabled": true,
+            "skill_dim": 64,
+            "dir": "/workspace/datasets/Droid_skill/combined_skill_transfer_visual_encoder_idm_final/aug",
+            "aug_num": 2
+        },
+        "subgoal": {
+            "enabled": false,
             "subgoal_dim": 512
         },
         "horizon": {
@@ -207,6 +213,7 @@
         "noise_samples": 8
     },
     "observation": {
+        "cam_mode": "single_wrist",
         "modalities": {
             "obs": {
                 "low_dim": [
@@ -215,7 +222,7 @@
                 ],
                 "rgb": [
                     "camera/image/varied_camera_1_left_image",
-                    "camera/image/varied_camera_2_left_image"
+                    "camera/image/wrist_camera_image"
                 ],
                 "depth": [],
                 "scan": []

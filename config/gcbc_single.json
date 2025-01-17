@@ -63,7 +63,7 @@
         "traj_transform_threads": 8,
         "traj_read_threads": 8,
         "cuda": true,
-        "batch_size": 128,
+        "batch_size": 256,
         "num_epochs": 10000,
         "seed": 1,
         "data_format": "droid_rlds",
@@ -208,6 +208,7 @@
         "num_cameras": 1
     },
     "observation": {
+        "cam_mode": "single",
         "modalities": {
             "obs": {
                 "low_dim": [
