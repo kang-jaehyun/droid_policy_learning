@@ -33,8 +33,7 @@ class DiffusionPolicyConfig(BaseConfig):
         self.algo.skill.skill_dim = 64
         self.algo.skill.dir = None
         self.algo.skill.aug_num = 0
-        
-        self.algo.num_cameras = 2
+
         
         # UNet parameters
         self.algo.unet.enabled = True

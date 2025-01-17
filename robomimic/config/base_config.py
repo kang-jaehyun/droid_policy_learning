@@ -279,6 +279,7 @@ class BaseConfig(Config):
             "robot0_gripper_qpos", 
             "object",
         ]
+        self.observation.cam_mode = "double"
         self.observation.modalities.obs.rgb = []              # specify rgb image observations for agent
         self.observation.modalities.obs.depth = []
         self.observation.modalities.obs.scan = []

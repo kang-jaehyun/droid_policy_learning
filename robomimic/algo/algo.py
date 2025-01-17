@@ -399,30 +399,32 @@ class PolicyAlgo(Algo):
         predicted_actions = np.array(predicted_actions)
         return actual_actions, predicted_actions, images
 
-    def compute_batch_visualize(self, batch, num_samples, savedir=None):
+    def compute_batch_visualize(self, batch, num_samples, savedir=None, cam_mode="double"):
         visualize = savedir is not None
-
-        num_cameras = 0
-        for key in batch["obs"]:
-            if "camera/image" in key:
-                num_cameras += 1
-    
-        assert num_cameras > 0, "No camera images found in batch"
         
-        varied_cam_1_images = batch["obs"]['camera/image/varied_camera_1_left_image'][:num_samples][:, 0, :, :, :]
-
-        if num_cameras == 1:
-            images = {
-                "varied_camera_1_image": varied_cam_1_images,
-                "varied_camera_2_image": varied_cam_1_images
-            }
-        elif num_cameras == 2:
+        if cam_mode == "double":
+            varied_cam_1_images = batch["obs"]['camera/image/varied_camera_1_left_image'][:num_samples][:, 0, :, :, :]
             varied_cam_2_images = batch["obs"]['camera/image/varied_camera_2_left_image'][:num_samples][:, 0, :, :, :]
             images = {
                 "varied_camera_1_image": varied_cam_1_images,
                 "varied_camera_2_image": varied_cam_2_images
             }
-            
+        elif cam_mode == "single":
+            varied_cam_1_images = batch["obs"]['camera/image/varied_camera_1_left_image'][:num_samples][:, 0, :, :, :]
+            images = {
+                "varied_camera_1_image": varied_cam_1_images,
+                "varied_camera_2_image": varied_cam_1_images, # HACK : to make the visualization code work
+            }
+        elif cam_mode == "single_wrist":
+            varied_cam_1_images = batch["obs"]['camera/image/varied_camera_1_left_image'][:num_samples][:, 0, :, :, :]
+            wrist_camera_image = batch["obs"]['camera/image/wrist_camera_image'][:num_samples][:, 0, :, :, :]
+            images = {
+                "varied_camera_1_left_image": varied_cam_1_images,
+                "wrist_camera_image": wrist_camera_image
+            }
+        else:
+            raise NotImplementedError
+
         if visualize:
             print("Saving batch visualization plots to {}".format(savedir))
 

@@ -28,7 +28,7 @@ import robomimic.utils.tensor_utils as TensorUtils
 import robomimic.utils.obs_utils as ObsUtils
 import os
 import json
-
+import numpy as np
 from transformers import AutoTokenizer, AutoModel
 tokenizer = AutoTokenizer.from_pretrained('distilbert-base-uncased')
 lang_model = AutoModel.from_pretrained("distilbert-base-uncased", torch_dtype=torch.float16)
@@ -101,11 +101,12 @@ class DiffusionPolicyUNet(PolicyAlgo):
         #     )
         elif self.algo_config.subgoal.enabled:
             # language condition
+            num_goal_images = 2 if self.obs_config.cam_mode == 'double' else 1
             
             self.subgoal_dim = self.algo_config.subgoal.subgoal_dim
             noise_pred_net = ConditionalUnet1D(
                 input_dim=self.ac_dim,
-                global_cond_dim=obs_dim*self.algo_config.horizon.observation_horizon + self.subgoal_dim * self.algo_config.num_cameras
+                global_cond_dim=obs_dim*self.algo_config.horizon.observation_horizon + self.subgoal_dim * num_goal_images
             )
         else:
             # create network object
@@ -161,8 +162,8 @@ class DiffusionPolicyUNet(PolicyAlgo):
         self.action_check_done = False
         self.obs_queue = None
         self.action_queue = None
-        self.num_cameras = self.algo_config.num_cameras
-    
+        self.cam_mode = self.obs_config.cam_mode
+        
     def process_batch_for_training(self, batch):
         """
         Processes input batch from a data loader to filter out
@@ -188,6 +189,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
             current_timesteps = chunk_indices[:, -1].numpy().tolist()
             
             aug_enabled = self.algo_config.skill.aug_num > 0
+            assert aug_enabled
             
             # make random int shape (B, 0~aug_num)
             skill_paths = []
@@ -198,8 +200,8 @@ class DiffusionPolicyUNet(PolicyAlgo):
                 else:
                     skill_paths.append(os.path.join(self.algo_config.skill.dir, os.path.splitext(filenames[i])[0], 'aug_{}.npy'.format(idx)))
             
-            skills = np.stack([np.load(skill_path)[ts] for skill_path, ts in zip(skill_paths, current_timesteps)])
-            
+            skill = np.stack([np.load(skill_path)[ts] for skill_path, ts in zip(skill_paths, current_timesteps)])
+            skill = torch.from_numpy(skill)
         
         
         del batch["obs"]["droid_path"]
@@ -222,7 +224,8 @@ class DiffusionPolicyUNet(PolicyAlgo):
                 input_batch["obs"]["lang_fixed/language_distilbert"] = encoded_lang.type(torch.float32)
 
         input_batch["actions"] = batch["actions"][:, :Tp, :]
-        
+        input_batch["skill"] = skill if self.algo_config.skill.enabled else None
+          
         # check if actions are normalized to [-1,1]
         if not self.action_check_done:
             actions = input_batch["actions"]
@@ -269,7 +272,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
         Tp = self.algo_config.horizon.prediction_horizon
         action_dim = self.ac_dim
         B = batch['actions'].shape[0]
-
+        skill = batch["skill"] if self.algo_config.skill.enabled else None
         
         with TorchUtils.maybe_no_grad(no_grad=validate):
             info = super(DiffusionPolicyUNet, self).train_on_batch(batch, epoch, validate=validate)
@@ -291,16 +294,17 @@ class DiffusionPolicyUNet(PolicyAlgo):
             obs_cond = obs_features.flatten(start_dim=1)
             
             if self.algo_config.subgoal.enabled:
-                if self.num_cameras == 2:
+                if self.cam_mode == 'double':
                     primary_feature = self.nets['policy']['obs_encoder'].module.nets['obs'].obs_nets['camera/image/varied_camera_1_left_image'](batch['goal']['image_primary'].permute(0,3,1,2))
                     secondary_feature = self.nets['policy']['obs_encoder'].module.nets['obs'].obs_nets['camera/image/varied_camera_2_left_image'](batch['goal']['image_secondary'].permute(0,3,1,2))
                     subgoal_feature = torch.cat([primary_feature, secondary_feature], axis=-1)
-                else:
+                elif self.cam_mode in ('single', 'single_wrist'):
                     subgoal_feature = self.nets['policy']['obs_encoder'].module.nets['obs'].obs_nets['camera/image/varied_camera_1_left_image'](batch['goal']['image_primary'].permute(0,3,1,2))
-                
+                    
                 obs_cond = torch.cat([obs_cond, subgoal_feature], axis=-1)
+                
             elif self.algo_config.skill.enabled:
-                skill = skill[:,-1, :]
+                skill = skill[:, -1, :]
                 obs_cond = torch.cat([obs_cond, skill], axis=-1)
             num_noise_samples = self.algo_config.noise_samples
 
