@@ -182,8 +182,25 @@ class DiffusionPolicyUNet(PolicyAlgo):
 
         input_batch = dict()
 
-        droid_path = batch["obs"]["droid_path"]
-        chunk_indices = batch["obs"]["chunk_indices"]
+        if self.algo_config.skill.enabled:
+            filenames = [self.rlds2mp4[p.decode('utf-8')] for p in batch['obs']['droid_path']]
+            chunk_indices = batch["obs"]["chunk_indices"]
+            current_timesteps = chunk_indices[:, -1].numpy().tolist()
+            
+            aug_enabled = self.algo_config.skill.aug_num > 0
+            
+            # make random int shape (B, 0~aug_num)
+            skill_paths = []
+            aug_indices = [random.randint(0, self.algo_config.skill.aug_num) for _ in range(len(filenames))]
+            for i, idx in enumerate(aug_indices):
+                if idx == self.algo_config.skill.aug_num:
+                    skill_paths.append(os.path.join(self.algo_config.skill.dir, os.path.splitext(filenames[i])[0], 'base.npy'))
+                else:
+                    skill_paths.append(os.path.join(self.algo_config.skill.dir, os.path.splitext(filenames[i])[0], 'aug_{}.npy'.format(idx)))
+            
+            skills = np.stack([np.load(skill_path)[ts] for skill_path, ts in zip(skill_paths, current_timesteps)])
+            
+        
         
         del batch["obs"]["droid_path"]
         del batch["obs"]["chunk_indices"]
@@ -282,7 +299,9 @@ class DiffusionPolicyUNet(PolicyAlgo):
                     subgoal_feature = self.nets['policy']['obs_encoder'].module.nets['obs'].obs_nets['camera/image/varied_camera_1_left_image'](batch['goal']['image_primary'].permute(0,3,1,2))
                 
                 obs_cond = torch.cat([obs_cond, subgoal_feature], axis=-1)
-
+            elif self.algo_config.skill.enabled:
+                skill = skill[:,-1, :]
+                obs_cond = torch.cat([obs_cond, skill], axis=-1)
             num_noise_samples = self.algo_config.noise_samples
 
             # sample noise to add to actions
