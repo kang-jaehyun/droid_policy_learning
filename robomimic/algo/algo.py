@@ -500,7 +500,7 @@ class PolicyAlgo(Algo):
                 predicted_actions_all_traj.append(predicted_actions)
                 if visualize:
                     traj_key = "{}_traj_{}".format(inference_key.lower(), traj_num)
-                    save_path = os.path.join(savedir, traj_key + ".png")                
+                    save_path = os.path.join(savedir, traj_key + ".png")
                     VisUtils.make_model_prediction_plot(
                         hdf5_path=d.hdf5_path,
                         save_path=save_path,
@@ -683,7 +683,7 @@ class RolloutPolicy(object):
         """Pretty print network description"""
         return self.policy.__repr__()
 
-    def __call__(self, ob, goal=None):
+    def __call__(self, ob, skill=None, goal=None):
         """
         Produce action from raw observation dict (and maybe goal dict) from environment.
 
@@ -695,7 +695,7 @@ class RolloutPolicy(object):
         ob = self._prepare_observation(ob)
         if goal is not None:
             goal = self._prepare_observation(goal)
-        ac = self.policy.get_action(obs_dict=ob, goal_mode=self.goal_mode, eval_mode=self.eval_mode)
+        ac = self.policy.get_action(obs_dict=ob, skill=skill, goal=goal, goal_mode=self.goal_mode, eval_mode=self.eval_mode)
         ac = TensorUtils.to_numpy(ac[0])
         if self.action_normalization_stats is not None:
             action_keys = self.policy.global_config.train.action_keys

@@ -388,7 +388,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
         self.obs_queue = obs_queue
         self.action_queue = action_queue
         
-    def get_action(self, obs_dict, goal_mode=None, eval_mode=False):
+    def get_action(self, obs_dict, skill=None, goal=None, goal_mode=None, eval_mode=False):
         """
         Get policy action outputs.
 
@@ -453,7 +453,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
             
             # run inference
             # [1,T,Da]
-            action_sequence = self._get_action_trajectory(obs_dict=obs_dict)
+            action_sequence = self._get_action_trajectory(obs_dict=obs_dict, skill=skill, goal=goal)
             
             # put actions into the queue
             self.action_queue.extend(action_sequence[0])
@@ -466,7 +466,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
         action = action.unsqueeze(0)
         return action
         
-    def _get_action_trajectory(self, obs_dict):
+    def _get_action_trajectory(self, obs_dict, skill, goal):
         assert not self.nets.training
         To = self.algo_config.horizon.observation_horizon
         Ta = self.algo_config.horizon.action_horizon
@@ -501,7 +501,20 @@ class DiffusionPolicyUNet(PolicyAlgo):
         # reshape observation to (B,obs_horizon*obs_dim)
         obs_cond = obs_features.flatten(start_dim=1)
 
-
+        if self.algo_config.subgoal.enabled:
+            if self.cam_mode == 'double':
+                primary_feature = self.nets['policy']['obs_encoder'].module.nets['obs'].obs_nets['camera/image/varied_camera_1_left_image'](goal.permute(0,3,1,2))
+                secondary_feature = self.nets['policy']['obs_encoder'].module.nets['obs'].obs_nets['camera/image/varied_camera_2_left_image'](goal.permute(0,3,1,2))
+                subgoal_feature = torch.cat([primary_feature, secondary_feature], axis=-1)
+            elif self.cam_mode in ('single', 'single_wrist'):
+                subgoal_feature = self.nets['policy']['obs_encoder'].module.nets['obs'].obs_nets['camera/image/varied_camera_1_left_image'](goal.permute(0,3,1,2))
+                
+            obs_cond = torch.cat([obs_cond, subgoal_feature], axis=-1)
+            
+        elif self.algo_config.skill.enabled:
+            skill = skill[:, -1, :]
+            obs_cond = torch.cat([obs_cond, skill], axis=-1)
+            
         # initialize action from Guassian noise
         noisy_action = torch.randn(
             (B, Tp, action_dim), device=self.device)
