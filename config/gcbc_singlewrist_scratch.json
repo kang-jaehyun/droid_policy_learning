@@ -41,7 +41,7 @@
             "warmstart": 0,
             "terminate_on_success": true
         },
-        "ckpt_path" : "/workspace/droid_policy_learning/robomimic/output/droid/droid_gcbc_singlewrist/droid_gcbc_singlewrist/20250117104713/models/model_epoch_150.pth"
+        "ckpt_path" : null
     },
     "train": {
         "data": [
