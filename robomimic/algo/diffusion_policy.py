@@ -125,7 +125,8 @@ class DiffusionPolicyUNet(PolicyAlgo):
 
         nets = nets.float().to(self.device)
         
-        json_path = '/workspace/datasets/droid/1.0.0/rlds2mp4.json'
+        # json_path = os.path.join(self.global_config.train.data_path, "droid", "1.0.0", "rlds2mp4.json")
+        json_path = "/home/jaehyunkang/datasets/rlds2mp4.json"
         with open(json_path, 'r') as f:
             self.rlds2mp4 = json.load(f)
         

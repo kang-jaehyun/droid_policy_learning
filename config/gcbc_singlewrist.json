@@ -19,7 +19,7 @@
         "save": {
             "enabled": true,
             "every_n_seconds": null,
-            "every_n_epochs": 10,
+            "every_n_epochs": 50,
             "epochs": [],
             "on_best_validation": false,
             "on_best_rollout_return": false,
@@ -67,7 +67,7 @@
         "num_epochs": 10000,
         "seed": 1,
         "data_format": "droid_rlds",
-        "data_path": "/workspace/datasets",
+        "data_path": "/home/jaehyunkang/datasets",
         "shuffle_buffer_size": 100000,
         "sample_weights": [
             1

@@ -1,7 +1,7 @@
 {
     "algo_name": "diffusion_policy",
     "experiment": {
-        "name": "droid_scbc_singlewrist_fixobskey",
+        "name": "droid_scbc_singlewrist_fixobskey_aug5",
         "validate": false,
         "logging": {
             "terminal_output_to_txt": true,
@@ -19,7 +19,7 @@
         "save": {
             "enabled": true,
             "every_n_seconds": null,
-            "every_n_epochs": 10,
+            "every_n_epochs": 25,
             "epochs": [],
             "on_best_validation": false,
             "on_best_rollout_return": false,
@@ -166,7 +166,7 @@
             "enabled": true,
             "skill_dim": 64,
             "dir": "/home/jaehyunkang/datasets2/Droid_skill/combined_skill_transfer_visual_encoder_idm_final/aug",
-            "aug_num": 2
+            "aug_num": 5
         },
         "subgoal": {
             "enabled": false,

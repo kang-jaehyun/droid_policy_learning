@@ -163,6 +163,7 @@ def train(config, device):
         
         robomimic_transform = eval("robomimic_transform_{}".format(config.observation.cam_mode))
         dataset = dataset.map(robomimic_transform, num_parallel_calls=config.train.traj_transform_threads)
+        dataset = dataset.apply(tf.data.experimental.ignore_errors())
         
         pytorch_dataset = TorchRLDSDataset(dataset)
         train_loader = DataLoader(
