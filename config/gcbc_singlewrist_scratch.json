@@ -1,7 +1,7 @@
 {
     "algo_name": "diffusion_policy",
     "experiment": {
-        "name": "droid_gcbc_singlewrist_finetune",
+        "name": "droid_gcbc_singlewrist_scratch",
         "validate": false,
         "logging": {
             "terminal_output_to_txt": true,
@@ -41,7 +41,7 @@
             "warmstart": 0,
             "terminate_on_success": true
         },
-        "ckpt_path" : null
+        "ckpt_path" : "/workspace/droid_policy_learning/robomimic/output/droid/droid_gcbc_singlewrist/droid_gcbc_singlewrist/20250117104713/models/model_epoch_150.pth"
     },
     "train": {
         "data": [
@@ -1549,7 +1549,7 @@
                 "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/99/trajectory_new.h5"
             }
         ],
-        "output_dir": "output/droid/droid_gcbc_singlewrist_finetune",
+        "output_dir": "output/droid/droid_gcbc_singlewrist_scratch",
         "num_data_workers": 4,
         "hdf5_cache_mode": null,
         "hdf5_use_swmr": true,

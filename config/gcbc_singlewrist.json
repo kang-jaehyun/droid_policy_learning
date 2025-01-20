@@ -10,7 +10,7 @@
             "wandb_proj_name": "rss2025_droid"
         },
         "mse": {
-            "enabled": true,
+            "enabled": false,
             "every_n_epochs": 10,
             "on_save_ckpt": true,
             "num_samples": 6,
@@ -19,7 +19,7 @@
         "save": {
             "enabled": true,
             "every_n_seconds": null,
-            "every_n_epochs": 10,
+            "every_n_epochs": 20,
             "epochs": [],
             "on_best_validation": false,
             "on_best_rollout_return": false,
@@ -67,7 +67,7 @@
         "num_epochs": 10000,
         "seed": 1,
         "data_format": "droid_rlds",
-        "data_path": "/workspace/datasets",
+        "data_path": "../datasets",
         "shuffle_buffer_size": 100000,
         "sample_weights": [
             1
@@ -161,12 +161,6 @@
                     "L2": 0.0
                 }
             }
-        },
-        "skill":{
-            "enabled": false,
-            "skill_dim": 64,
-            "dir": "/workspace/datasets/Droid_skill/combined_skill_transfer_visual_encoder_idm_final/aug",
-            "aug_num": 2
         },
         "subgoal": {
             "enabled": true,

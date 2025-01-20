@@ -10,7 +10,7 @@
             "wandb_proj_name": "rss2025_droid"
         },
         "mse": {
-            "enabled": true,
+            "enabled": false,
             "every_n_epochs": 10,
             "on_save_ckpt": true,
             "num_samples": 6,
@@ -19,7 +19,7 @@
         "save": {
             "enabled": true,
             "every_n_seconds": null,
-            "every_n_epochs": 10,
+            "every_n_epochs": 20,
             "epochs": [],
             "on_best_validation": false,
             "on_best_rollout_return": false,
@@ -40,10 +40,1515 @@
             "rate": 40,
             "warmstart": 0,
             "terminate_on_success": true
-        }
+        },
+        "ckpt_path" : null
     },
     "train": {
-        "data": null,
+        "data": [
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/0/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/1/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/10/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/100/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/11/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/12/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/13/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/14/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/15/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/16/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/17/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/18/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/19/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/2/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/20/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/21/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/22/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/23/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/24/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/25/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/26/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/27/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/28/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/29/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/3/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/30/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/31/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/32/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/33/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/34/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/35/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/36/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/37/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/38/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/39/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/4/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/40/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/41/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/42/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/43/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/44/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/45/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/46/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/47/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/48/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/49/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/5/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/50/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/51/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/52/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/53/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/54/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/55/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/56/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/57/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/58/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/59/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/6/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/60/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/61/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/62/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/63/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/64/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/65/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/66/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/67/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/68/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/69/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/7/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/70/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/71/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/72/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/73/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/74/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/75/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/76/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/77/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/78/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/79/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/8/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/80/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/81/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/82/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/83/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/84/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/85/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/86/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/87/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/88/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/89/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/9/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/90/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/91/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/92/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/93/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/94/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/95/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/96/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/97/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/98/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/close the trash bin/99/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/0/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/1/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/10/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/11/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/12/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/13/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/14/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/15/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/16/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/17/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/18/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/19/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/2/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/20/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/21/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/22/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/23/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/24/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/25/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/26/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/27/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/28/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/29/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/3/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/30/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/31/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/32/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/33/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/34/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/35/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/36/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/37/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/38/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/39/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/4/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/40/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/41/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/42/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/43/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/44/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/45/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/46/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/47/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/48/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/49/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/5/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/50/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/51/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/52/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/53/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/54/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/55/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/56/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/57/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/58/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/59/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/6/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/60/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/61/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/62/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/63/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/64/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/65/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/66/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/67/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/68/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/69/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/7/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/70/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/71/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/72/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/73/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/74/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/75/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/76/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/77/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/78/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/79/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/8/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/80/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/81/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/82/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/83/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/84/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/85/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/86/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/87/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/88/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/89/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/9/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/90/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/91/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/92/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/93/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/94/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/95/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/96/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/97/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/98/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/open the trash bin/99/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/0/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/1/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/10/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/11/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/12/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/13/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/14/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/15/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/16/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/17/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/18/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/19/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/2/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/20/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/21/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/22/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/23/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/24/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/25/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/26/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/27/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/28/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/29/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/3/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/30/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/31/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/32/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/33/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/34/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/35/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/36/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/37/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/38/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/39/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/4/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/40/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/41/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/42/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/43/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/44/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/45/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/46/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/47/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/48/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/49/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/5/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/50/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/51/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/52/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/53/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/54/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/55/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/56/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/57/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/58/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/59/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/6/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/60/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/61/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/62/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/63/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/64/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/65/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/66/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/67/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/68/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/69/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/7/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/70/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/71/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/72/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/73/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/74/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/75/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/76/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/77/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/78/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/79/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/8/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/80/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/81/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/82/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/83/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/84/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/85/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/86/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/87/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/88/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/89/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/9/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/90/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/91/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/92/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/93/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/94/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/95/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/96/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/97/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/98/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the carrot and place it in the yellow bowl/99/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/0/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/1/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/10/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/11/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/12/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/13/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/14/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/15/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/16/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/17/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/18/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/19/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/2/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/20/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/21/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/22/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/23/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/24/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/25/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/26/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/27/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/28/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/29/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/3/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/30/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/31/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/32/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/33/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/34/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/35/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/36/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/37/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/38/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/39/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/4/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/40/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/41/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/42/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/43/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/44/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/45/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/46/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/47/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/48/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/49/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/5/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/50/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/51/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/52/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/53/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/54/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/55/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/56/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/57/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/58/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/59/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/6/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/60/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/61/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/62/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/63/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/64/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/65/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/66/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/67/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/68/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/69/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/7/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/70/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/71/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/72/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/73/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/74/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/75/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/76/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/77/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/78/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/79/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/8/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/80/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/81/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/82/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/83/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/84/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/85/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/86/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/87/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/88/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/89/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/9/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/90/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/91/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/92/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/93/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/94/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/95/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/96/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/97/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/98/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pick the cup and place it in the trash bin/99/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/0/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/1/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/10/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/11/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/12/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/13/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/14/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/15/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/16/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/17/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/18/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/19/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/2/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/20/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/21/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/22/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/23/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/24/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/25/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/26/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/27/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/28/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/29/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/3/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/30/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/31/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/32/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/33/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/34/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/35/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/36/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/37/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/38/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/39/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/4/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/40/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/41/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/42/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/43/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/44/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/45/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/46/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/47/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/48/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/49/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/5/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/50/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/51/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/52/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/53/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/54/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/55/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/56/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/57/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/58/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/59/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/6/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/60/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/61/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/62/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/63/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/64/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/65/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/66/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/67/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/68/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/69/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/7/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/70/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/71/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/72/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/73/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/74/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/75/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/76/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/77/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/78/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/79/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/8/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/80/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/81/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/82/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/83/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/84/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/85/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/86/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/87/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/88/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/89/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/9/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/90/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/91/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/92/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/93/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/94/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/95/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/96/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/97/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/98/trajectory_new.h5"
+            },
+            {
+                "path": "../datasets/droid_custom/success/7996348764/pull out the tissue/99/trajectory_new.h5"
+            }
+        ],
         "output_dir": "output/droid/droid_scbc_singlewrist_finetune",
         "num_data_workers": 4,
         "hdf5_cache_mode": null,
@@ -66,8 +1571,8 @@
         "batch_size": 128,
         "num_epochs": 10000,
         "seed": 1,
-        "data_format": "droid_rlds",
-        "data_path": "/workspace/datasets",
+        "data_format": "droid",
+        "data_path": "../datasets",
         "shuffle_buffer_size": 100000,
         "sample_weights": [
             1
@@ -165,8 +1670,8 @@
         "skill":{
             "enabled": true,
             "skill_dim": 64,
-            "dir": "/workspace/datasets/Droid_skill/combined_skill_transfer_visual_encoder_idm_final/aug",
-            "aug_num": 2
+            "dir": "../datasets/droid_custom_skill/combined_skill_transfer_visual_encoder_idm_final/aug",
+            "aug_num": 5
         },
         "subgoal": {
             "enabled": false,

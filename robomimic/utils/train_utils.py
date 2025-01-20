@@ -21,7 +21,7 @@ import robomimic.utils.tensor_utils as TensorUtils
 import robomimic.utils.log_utils as LogUtils
 import robomimic.utils.file_utils as FileUtils
 
-from robomimic.utils.dataset import SequenceDataset, DROIDDataset, MetaDataset, DROIDCustomDataset
+from robomimic.utils.dataset import SequenceDataset, DROIDDataset, MetaDataset
 from robomimic.envs.env_base import EnvBase
 from robomimic.envs.wrappers import EnvWrapper
 from robomimic.algo import RolloutPolicy
@@ -175,14 +175,15 @@ def dataset_factory(config, obs_keys, filter_by_attribute=None, dataset_path=Non
 
     ds_kwargs["hdf5_path"] = [ds_cfg["path"] for ds_cfg in config.train.data]
     ds_kwargs["filter_by_attribute"] = [filter_by_attribute for ds_cfg in config.train.data]
+    ds_kwargs["skill_config"] = config.algo.skill
+    ds_kwargs["subgoal_config"] = config.algo.subgoal
     ds_weights = [ds_cfg.get("weight", 1.0) for ds_cfg in config.train.data]
     ds_labels = [ds_cfg.get("label", "dummy") for ds_cfg in config.train.data]
+
 
     meta_ds_kwargs = dict()
     if config.train.data_format == "droid":
         dataset_class = DROIDDataset
-    elif config.train.data_format == "droid_finetune":
-        dataset_class = DROIDCustomDataset
     else:
         dataset_class = SequenceDataset
     dataset = get_dataset(

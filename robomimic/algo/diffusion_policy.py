@@ -85,6 +85,8 @@ class DiffusionPolicyUNet(PolicyAlgo):
         
         obs_dim = obs_encoder.output_shape()[0]
         
+        self.data_format = self.global_config.train.data_format
+        
         if self.algo_config.skill.enabled:
             self.skill_dim = self.algo_config.skill.skill_dim
                 
@@ -125,9 +127,10 @@ class DiffusionPolicyUNet(PolicyAlgo):
 
         nets = nets.float().to(self.device)
         
-        json_path = '/workspace/datasets/droid/1.0.0/rlds2mp4.json'
-        with open(json_path, 'r') as f:
-            self.rlds2mp4 = json.load(f)
+        if self.data_format == "droid_rlds":
+            json_path = '/workspace/datasets/droid/1.0.0/rlds2mp4.json'
+            with open(json_path, 'r') as f:
+                self.rlds2mp4 = json.load(f)
         
         # setup noise scheduler
         noise_scheduler = None
@@ -184,33 +187,47 @@ class DiffusionPolicyUNet(PolicyAlgo):
         input_batch = dict()
 
         if self.algo_config.skill.enabled:
-            filenames = [self.rlds2mp4[p.decode('utf-8')] for p in batch['obs']['droid_path']]
-            chunk_indices = batch["obs"]["chunk_indices"]
-            current_timesteps = chunk_indices[:, -1].numpy().tolist()
-            
-            aug_enabled = self.algo_config.skill.aug_num > 0
-            assert aug_enabled
-            
-            # make random int shape (B, 0~aug_num)
-            skill_paths = []
-            aug_indices = [random.randint(0, self.algo_config.skill.aug_num) for _ in range(len(filenames))]
-            for i, idx in enumerate(aug_indices):
-                if idx == self.algo_config.skill.aug_num:
-                    skill_paths.append(os.path.join(self.algo_config.skill.dir, os.path.splitext(filenames[i])[0], 'base.npy'))
-                else:
-                    skill_paths.append(os.path.join(self.algo_config.skill.dir, os.path.splitext(filenames[i])[0], 'aug_{}.npy'.format(idx)))
-            
-            skill = np.stack([np.load(skill_path)[ts] for skill_path, ts in zip(skill_paths, current_timesteps)])
-            skill = torch.from_numpy(skill)
+            if self.data_format == "droid_rlds":
+                filenames = [self.rlds2mp4[p.decode('utf-8')] for p in batch['obs']['droid_path']]
+                chunk_indices = batch["obs"]["chunk_indices"]
+                current_timesteps = chunk_indices[:, -1].numpy().tolist()
+                
+                aug_enabled = self.algo_config.skill.aug_num > 0
+                assert aug_enabled
+                
+                # make random int shape (B, 0~aug_num)
+                skill_paths = []
+                aug_indices = [random.randint(0, self.algo_config.skill.aug_num) for _ in range(len(filenames))]
+                for i, idx in enumerate(aug_indices):
+                    if idx == self.algo_config.skill.aug_num:
+                        skill_paths.append(os.path.join(self.algo_config.skill.dir, os.path.splitext(filenames[i])[0], 'base.npy'))
+                    else:
+                        skill_paths.append(os.path.join(self.algo_config.skill.dir, os.path.splitext(filenames[i])[0], 'aug_{}.npy'.format(idx)))
+                
+                skill = np.stack([np.load(skill_path)[ts] for skill_path, ts in zip(skill_paths, current_timesteps)])
+                skill = torch.from_numpy(skill)
+                
+                del batch["obs"]["droid_path"]
+                del batch["obs"]["chunk_indices"]
+                
+            elif self.data_format == "droid":
+                skill = batch["goal"]['skill']
+            else:
+                raise NotImplementedError
         
         
-        del batch["obs"]["droid_path"]
-        del batch["obs"]["chunk_indices"]
-        
-        # batch["obs"]['droid_path'][0].decode("utf-8")
         ## Semi-hacky fix which does the filtering for raw language which is just a list of lists of strings
         input_batch["obs"] = {k: batch["obs"][k][:, :To, :] for k in batch["obs"] if "raw" not in k }
-        input_batch['goal'] = batch['goal']
+        assert self.cam_mode != 'double'
+        if self.algo_config.subgoal.enabled:
+            if self.data_format == "droid":
+                primary_image = batch["goal"]['camera/image/varied_camera_1_left_image'] / 255.
+                input_batch["goal"] = {"image_primary": primary_image}
+            elif self.data_format == "droid_rlds":
+                input_batch['goal'] = batch['goal']
+        
+        
+        
         if "lang_fixed/language_raw" in batch["obs"].keys():
             str_ls = list(batch['obs']['lang_fixed/language_raw'][0])
             input_batch["obs"]["lang_fixed/language_raw"] = [str_ls] * To
