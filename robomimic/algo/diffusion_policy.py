@@ -128,7 +128,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
         nets = nets.float().to(self.device)
         
         if self.data_format == "droid_rlds":
-            json_path = '/workspace/datasets/droid/1.0.0/rlds2mp4.json'
+            json_path = '../datasets/droid/1.0.0/rlds2mp4.json'
             with open(json_path, 'r') as f:
                 self.rlds2mp4 = json.load(f)
         
