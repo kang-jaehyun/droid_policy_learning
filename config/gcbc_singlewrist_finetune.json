@@ -79,7 +79,7 @@
         "seed": 1,
         "data_format": "droid",
         "data_path": "/workspace/datasets",
-        "shuffle_buffer_size": 10,
+        "shuffle_buffer_size": 100000,
         "sample_weights": [
             1
         ],
