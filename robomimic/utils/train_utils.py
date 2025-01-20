@@ -21,7 +21,7 @@ import robomimic.utils.tensor_utils as TensorUtils
 import robomimic.utils.log_utils as LogUtils
 import robomimic.utils.file_utils as FileUtils
 
-from robomimic.utils.dataset import SequenceDataset, DROIDDataset, MetaDataset
+from robomimic.utils.dataset import SequenceDataset, DROIDDataset, MetaDataset, DROIDCustomDataset
 from robomimic.envs.env_base import EnvBase
 from robomimic.envs.wrappers import EnvWrapper
 from robomimic.algo import RolloutPolicy
@@ -179,9 +179,14 @@ def dataset_factory(config, obs_keys, filter_by_attribute=None, dataset_path=Non
     ds_labels = [ds_cfg.get("label", "dummy") for ds_cfg in config.train.data]
 
     meta_ds_kwargs = dict()
-
+    if config.train.data_format == "droid":
+        dataset_class = DROIDDataset
+    elif config.train.data_format == "droid_finetune":
+        dataset_class = DROIDCustomDataset
+    else:
+        dataset_class = SequenceDataset
     dataset = get_dataset(
-        ds_class=DROIDDataset if config.train.data_format == "droid" else SequenceDataset,
+        ds_class=dataset_class,
         ds_kwargs=ds_kwargs,
         ds_weights=ds_weights,
         ds_labels=ds_labels,
@@ -220,11 +225,9 @@ def get_dataset(
             else:
                 ds_kwargs_copy[k] = ds_kwargs[k]
         
-        try:
-            ds_list.append(ds_class(**ds_kwargs_copy))
-            ds_weights_filtered.append(ds_weights[i])
-        except:
-            pass
+        ds_list.append(ds_class(**ds_kwargs_copy))
+        ds_weights_filtered.append(ds_weights[i])
+
         t3 = time.time()
         print(f"{i} / {alllen} in {t3-t0}") 
     

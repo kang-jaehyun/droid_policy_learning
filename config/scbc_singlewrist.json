@@ -1,7 +1,7 @@
 {
     "algo_name": "diffusion_policy",
     "experiment": {
-        "name": "droid_scbc_singlewrist",
+        "name": "droid_scbc_singlewrist_fixobskey",
         "validate": false,
         "logging": {
             "terminal_output_to_txt": true,
@@ -44,7 +44,7 @@
     },
     "train": {
         "data": null,
-        "output_dir": "output/droid/droid_scbc_singlewrist",
+        "output_dir": "output/droid/droid_scbc_singlewrist_fixobskey",
         "num_data_workers": 4,
         "hdf5_cache_mode": null,
         "hdf5_use_swmr": true,

@@ -14,6 +14,7 @@ import psutil
 
 import torch.utils.data
 
+import robomimic.utils.torch_utils as TorchUtils
 import robomimic.utils.tensor_utils as TensorUtils
 import robomimic.utils.obs_utils as ObsUtils
 import robomimic.utils.action_utils as AcUtils
@@ -1041,7 +1042,633 @@ class DROIDDataset(SequenceDataset):
                 meta['obs'][k] = [str(s[0])[2:-1] for s in meta['obs'][k]]
         return meta
 
+class DROIDCustomDataset(SequenceDataset):
+    def __init__(
+        self,
+        hdf5_path,
+        obs_keys,
+        action_keys,
+        dataset_keys,
+        action_config,
+        frame_stack=1,
+        seq_length=1,
+        pad_frame_stack=True,
+        pad_seq_length=True,
+        get_pad_mask=False,
+        goal_mode=None,
+        hdf5_cache_mode=None,
+        hdf5_use_swmr=True,
+        hdf5_normalize_obs=False,
+        filter_by_attribute=None,
+        load_next_obs=True,
+        shuffled_obs_key_groups=None,
+        truncated_geom_factor=None,
+    ):
+        """
+        Dataset class for fetching sequences of experience.
+        Length of the fetched sequence is equal to (@frame_stack - 1 + @seq_length)
 
+        Args:
+            hdf5_path (str): path to hdf5
+
+            obs_keys (tuple, list): keys to observation items (image, object, etc) to be fetched from the dataset
+
+            action_config (dict): TODO
+
+            dataset_keys (tuple, list): keys to dataset items (actions, rewards, etc) to be fetched from the dataset
+
+            frame_stack (int): numbers of stacked frames to fetch. Defaults to 1 (single frame).
+
+            seq_length (int): length of sequences to sample. Defaults to 1 (single frame).
+
+            pad_frame_stack (int): whether to pad sequence for frame stacking at the beginning of a demo. This
+                ensures that partial frame stacks are observed, such as (s_0, s_0, s_0, s_1). Otherwise, the
+                first frame stacked observation would be (s_0, s_1, s_2, s_3).
+
+            pad_seq_length (int): whether to pad sequence for sequence fetching at the end of a demo. This
+                ensures that partial sequences at the end of a demonstration are observed, such as
+                (s_{T-1}, s_{T}, s_{T}, s_{T}). Otherwise, the last sequence provided would be
+                (s_{T-3}, s_{T-2}, s_{T-1}, s_{T}).
+
+            get_pad_mask (bool): if True, also provide padding masks as part of the batch. This can be
+                useful for masking loss functions on padded parts of the data.
+
+            goal_mode (str): either "last" or None. Defaults to None, which is to not fetch goals
+
+            hdf5_cache_mode (str): one of ["all", "low_dim", or None]. Set to "all" to cache entire hdf5 
+                in memory - this is by far the fastest for data loading. Set to "low_dim" to cache all 
+                non-image data. Set to None to use no caching - in this case, every batch sample is 
+                retrieved via file i/o. You should almost never set this to None, even for large 
+                image datasets.
+
+            hdf5_use_swmr (bool): whether to use swmr feature when opening the hdf5 file. This ensures
+                that multiple Dataset instances can all access the same hdf5 file without problems.
+
+            hdf5_normalize_obs (bool): if True, normalize observations by computing the mean observation
+                and std of each observation (in each dimension and modality), and normalizing to unit
+                mean and variance in each dimension.
+
+            filter_by_attribute (str): if provided, use the provided filter key to look up a subset of
+                demonstrations to load
+
+            load_next_obs (bool): whether to load next_obs from the dataset
+
+            shuffled_obs_key_groups (list): TODO
+        """
+        super(SequenceDataset, self).__init__()
+
+        self.hdf5_path = os.path.expanduser(hdf5_path)
+        self.hdf5_use_swmr = hdf5_use_swmr
+        self.hdf5_normalize_obs = hdf5_normalize_obs
+        self._hdf5_file = None
+
+        self.truncated_geom_factor = truncated_geom_factor
+
+        assert hdf5_cache_mode in ["all", "low_dim", None]
+        self.hdf5_cache_mode = hdf5_cache_mode
+
+        self.load_next_obs = load_next_obs
+        self.filter_by_attribute = filter_by_attribute
+
+        # get all keys that needs to be fetched
+        self.obs_keys = tuple(obs_keys)
+        self.action_keys = tuple(action_keys)
+        self.dataset_keys = tuple(dataset_keys)
+        # add action keys to dataset keys
+        if self.action_keys is not None:
+            self.dataset_keys = tuple(set(self.dataset_keys).union(set(self.action_keys)))
+
+        self.action_config = action_config
+
+        self.n_frame_stack = frame_stack
+        assert self.n_frame_stack >= 1
+
+        self.seq_length = seq_length
+        assert self.seq_length >= 1
+
+        self.goal_mode = goal_mode
+        if self.goal_mode is not None:
+            assert self.goal_mode in ["last", "geom"]
+
+        self.pad_seq_length = pad_seq_length
+        self.pad_frame_stack = pad_frame_stack
+        self.get_pad_mask = get_pad_mask
+
+        self.load_demo_info(filter_by_attribute=self.filter_by_attribute)
+
+        # maybe prepare for observation normalization
+        self.obs_normalization_stats = None
+        if self.hdf5_normalize_obs:
+            self.obs_normalization_stats = self.normalize_obs()
+
+        # prepare for action normalization
+        self.action_normalization_stats = None
+
+        print(self.hdf5_cache_mode) # Should be None
+
+        # maybe store dataset in memory for fast access
+        if self.hdf5_cache_mode in ["all", "low_dim"]:
+            obs_keys_in_memory = self.obs_keys
+            if self.hdf5_cache_mode == "low_dim":
+                # only store low-dim observations
+                obs_keys_in_memory = []
+                for k in self.obs_keys:
+                    if ObsUtils.key_is_obs_modality(k, "low_dim"):
+                        obs_keys_in_memory.append(k)
+            self.obs_keys_in_memory = obs_keys_in_memory
+
+            self.hdf5_cache = self.load_dataset_in_memory(
+                demo_list=self.demos,
+                hdf5_file=self.hdf5_file,
+                obs_keys=self.obs_keys_in_memory,
+                dataset_keys=self.dataset_keys,
+                load_next_obs=self.load_next_obs
+            )
+
+            if self.hdf5_cache_mode == "all":
+                # cache getitem calls for even more speedup. We don't do this for
+                # "low-dim" since image observations require calls to getitem anyways.
+                print("SequenceDataset: caching get_item calls...")
+                self.getitem_cache = [self.get_item(i) for i in LogUtils.custom_tqdm(range(len(self)))]
+
+                # don't need the previous cache anymore
+                del self.hdf5_cache
+                self.hdf5_cache = None
+        else:
+
+            ### EVEN WHEN CACHING IS NONE, TRY AND LOAD THEN DELETE
+            ### WHY? TO FILTER OUT BAD DATASETS AHEAD OF TIME
+            obs_keys_in_memory = self.obs_keys
+            # only store low-dim observations
+            obs_keys_in_memory = []
+            for k in self.obs_keys:
+                if ObsUtils.key_is_obs_modality(k, "low_dim"):
+                    obs_keys_in_memory.append(k)
+            self.obs_keys_in_memory = obs_keys_in_memory
+
+            self.hdf5_cache = self.load_dataset_in_memory(
+                demo_list=self.demos,
+                hdf5_file=self.hdf5_file,
+                obs_keys=self.obs_keys_in_memory,
+                dataset_keys=self.dataset_keys,
+                load_next_obs=self.load_next_obs
+            )
+            del self.hdf5_cache
+            del self.obs_keys_in_memory
+            self.obs_keys_in_memory = None
+
+            self.hdf5_cache = None
+
+        if shuffled_obs_key_groups is None:
+            self.shuffled_obs_key_groups = list()
+        else:
+            self.shuffled_obs_key_groups = shuffled_obs_key_groups
+
+        self.close_and_delete_hdf5_handle()
+
+    def load_demo_info(self, filter_by_attribute=None, demos=None):
+        """
+        Args:
+            filter_by_attribute (str): if provided, use the provided filter key
+                to select a subset of demonstration trajectories to load
+
+            demos (list): list of demonstration keys to load from the hdf5 file. If 
+                omitted, all demos in the file (or under the @filter_by_attribute 
+                filter key) are used.
+        """
+        # filter demo trajectory by mask
+        if demos is not None:
+            self.demos = demos
+        elif filter_by_attribute is not None:
+            self.demos = [elem.decode("utf-8") for elem in np.array(self.hdf5_file["mask/{}".format(filter_by_attribute)][:])]
+        else:
+            self.demos = list(self.hdf5_file["data"].keys())
+
+        # sort demo keys
+        inds = np.argsort([int(elem[5:]) for elem in self.demos])
+        self.demos = [self.demos[i] for i in inds]
+
+        self.n_demos = len(self.demos)
+
+        # keep internal index maps to know which transitions belong to which demos
+        self._index_to_demo_id = dict()  # maps every index to a demo id
+        self._demo_id_to_start_indices = dict()  # gives start index per demo id
+        self._demo_id_to_demo_length = dict()
+
+        # determine index mapping
+        self.total_num_sequences = 0
+        for ep in self.demos:
+            demo_length = self.hdf5_file["data/{}".format(ep)].attrs["num_samples"]
+            self._demo_id_to_start_indices[ep] = self.total_num_sequences
+            self._demo_id_to_demo_length[ep] = demo_length
+
+            num_sequences = demo_length
+            # determine actual number of sequences taking into account whether to pad for frame_stack and seq_length
+            if not self.pad_frame_stack:
+                num_sequences -= (self.n_frame_stack - 1)
+            if not self.pad_seq_length:
+                num_sequences -= (self.seq_length - 1)
+
+            if self.pad_seq_length:
+                assert demo_length >= 1  # sequence needs to have at least one sample
+                num_sequences = max(num_sequences, 1)
+            else:
+                assert num_sequences >= 1  # assume demo_length >= (self.n_frame_stack - 1 + self.seq_length)
+
+            for _ in range(num_sequences):
+                self._index_to_demo_id[self.total_num_sequences] = ep
+                self.total_num_sequences += 1
+    def get_action_traj(self, ep):
+        action_traj = dict()
+        
+        cartesian = self.hdf5_file["action/cartesian_position"][()].astype('float32')
+        in_rot = cartesian[:,3:6].astype(np.float32) # in euler format
+        rot_ = torch.from_numpy(in_rot)
+        rot_6d = TorchUtils.euler_angles_to_rot_6d(
+            rot_, convention="XYZ",
+        )
+        rot_6d = rot_6d.numpy().astype(np.float32)
+        
+        action_traj['actions/abs_pos'] = cartesian[:,:3].astype(np.float32)
+        action_traj['actions/abs_rot_6d'] = rot_6d
+        action_traj['actions/gripper_position'] = self.hdf5_file["action/gripper_position"][()].astype('float32')
+        
+        self.close_and_delete_hdf5_handle()
+
+        return action_traj
+
+    def load_demo_info(self, filter_by_attribute=None, demos=None, n_demos=None):
+        """
+        Args:
+            filter_by_attribute (str): if provided, use the provided filter key
+                to select a subset of demonstration trajectories to load
+
+            demos (list): list of demonstration keys to load from the hdf5 file. If 
+                omitted, all demos in the file (or under the @filter_by_attribute 
+                filter key) are used.
+        """
+
+        self.demos = ["demo"]
+
+        self.n_demos = len(self.demos)
+
+        # keep internal index maps to know which transitions belong to which demos
+        self._index_to_demo_id = dict()  # maps every index to a demo id
+        self._demo_id_to_start_indices = dict()  # gives start index per demo id
+        self._demo_id_to_demo_length = dict()
+
+        # segment time stamps
+        self._demo_id_to_segments = dict()
+
+        ep = self.demos[0]
+
+        # determine index mapping
+        self.total_num_sequences = 0
+        demo_length = self.hdf5_file["action/cartesian_position"].shape[0] - self.hdf5_file['observation/timestamp/skip_action'][:].sum()
+        self._demo_id_to_start_indices[ep] = self.total_num_sequences
+        self._demo_id_to_demo_length[ep] = demo_length
+
+        # seperate demo into segments for better alignment
+        gripper_actions = list(self.hdf5_file["action/gripper_position"])
+        gripper_closed = [1 if x > 0 else 0 for x in gripper_actions]
+
+        try:
+            # find when the gripper fist opens/closes
+            gripper_close = gripper_closed.index(1)
+            gripper_open = gripper_close + gripper_closed[gripper_close:].index(0)
+        except ValueError:
+            # special case for (invalid) trajectories
+            gripper_close, gripper_open = int(demo_length / 3), int(demo_length / 3 * 2)
+            print("No gripper action:", gripper_actions)
+        self._demo_id_to_segments[ep] = [0, gripper_close, gripper_open, demo_length - 1]
+
+        num_sequences = demo_length
+        # determine actual number of sequences taking into account whether to pad for frame_stack and seq_length
+        if not self.pad_frame_stack:
+            num_sequences -= (self.n_frame_stack - 1)
+        if not self.pad_seq_length:
+            num_sequences -= (self.seq_length - 1)
+
+        if self.pad_seq_length:
+            assert demo_length >= 1  # sequence needs to have at least one sample
+            num_sequences = max(num_sequences, 1)
+        else:
+            assert num_sequences >= 1  # assume demo_length >= (self.n_frame_stack - 1 + self.seq_length)
+
+        for _ in range(num_sequences):
+            self._index_to_demo_id[self.total_num_sequences] = ep
+            self.total_num_sequences += 1
+
+    def load_dataset_in_memory(self, demo_list, hdf5_file, obs_keys, dataset_keys, load_next_obs):
+        """
+        Loads the hdf5 dataset into memory, preserving the structure of the file. Note that this
+        differs from `self.getitem_cache`, which, if active, actually caches the outputs of the
+        `getitem` operation.
+
+        Args:
+            demo_list (list): list of demo keys, e.g., 'demo_0'
+            hdf5_file (h5py.File): file handle to the hdf5 dataset.
+            obs_keys (list, tuple): observation keys to fetch, e.g., 'images'
+            dataset_keys (list, tuple): dataset keys to fetch, e.g., 'actions'
+            load_next_obs (bool): whether to load next_obs from the dataset
+
+        Returns:
+            all_data (dict): dictionary of loaded data.
+        """
+        all_data = dict()
+        print("SequenceDataset: loading dataset into memory...")
+
+        for ep in LogUtils.custom_tqdm(demo_list):
+            all_data[ep] = {}
+            all_data[ep]["attrs"] = {}
+            all_data[ep]["attrs"]["num_samples"] = hdf5_file["action/cartesian_position"].shape[0] # hack to get traj len
+            # get obs
+            ## Dont make strings floats
+            all_data[ep]["obs"] = {k: hdf5_file["observation/{}".format(k)][()].astype('float32') if ("raw" not in k) else hdf5_file["observation/{}".format(k)][()] for k in obs_keys}
+            if load_next_obs:
+                raise NotImplementedError
+            # get other dataset keys
+            cartesian = hdf5_file["action/cartesian_position"][()].astype('float32')
+            
+            in_rot = cartesian[:,3:6].astype(np.float32) # in euler format
+            rot_ = torch.from_numpy(in_rot)
+            rot_6d = TorchUtils.euler_angles_to_rot_6d(
+                rot_, convention="XYZ",
+            ) 
+            rot_6d = rot_6d.numpy().astype(np.float32)
+            
+            all_data[ep]['actions/abs_pos'] = cartesian[:,:3].astype(np.float32)
+            all_data[ep]['actions/abs_rot_6d'] = rot_6d
+            all_data[ep]['actions/gripper_position'] = hdf5_file["action/gripper_position"][()].astype('float32')
+            # for k in dataset_keys:
+            #     if k in hdf5_file.keys():
+            #         all_data[ep][k] = hdf5_file["{}".format(k)][()].astype('float32')
+                    
+            #     else:
+            #         raise NotImplementedError
+
+        return all_data
+
+    def get_dataset_for_ep(self, ep, key, try_to_use_cache=True):
+        """
+        Helper utility to get a dataset for a specific demonstration.
+        Takes into account whether the dataset has been loaded into memory.
+        """
+
+        # check if this key should be in memory
+        key_should_be_in_memory = try_to_use_cache and (self.hdf5_cache_mode in ["all", "low_dim"])
+        if key_should_be_in_memory:
+            # if key is an observation, it may not be in memory
+            if '/' in key:
+                key_splits = key.split('/')
+                key1 = key_splits[0]
+                key2 = "/".join(key_splits[1:])
+                if key1 == "observation" and key2 not in self.obs_keys_in_memory:
+                    key_should_be_in_memory = False
+
+        if key_should_be_in_memory:
+            # read cache
+            if '/' in key:
+                key_splits = key.split('/')
+                key1 = key_splits[0]
+                key2 = "/".join(key_splits[1:])
+                if key1 == "observation":
+                    ret = self.hdf5_cache[ep]["obs"][key2]
+                else:
+                    ret = self.hdf5_cache[ep][key]
+            else:
+                ret = self.hdf5_cache[ep][key]
+        else:
+            # read from file
+            hd5key = "{}".format(key) #"data/{}/{}".format(ep, key)
+            ret = self.hdf5_file[hd5key][:]
+        self.close_and_delete_hdf5_handle()
+        return ret
+
+    
+    def get_sequence_from_demo(self, demo_id, index_in_demo, keys, num_frames_to_stack=0, seq_length=1, action_padding_len=None):
+        """
+        Extract a (sub)sequence of data items from a demo given the @keys of the items.
+
+        Args:
+            demo_id (str): id of the demo, e.g., demo_0
+            index_in_demo (int): beginning index of the sequence wrt the demo
+            keys (tuple): list of keys to extract
+            num_frames_to_stack (int): numbers of frame to stack. Seq gets prepended with repeated items if out of range
+            seq_length (int): sequence length to extract. Seq gets post-pended with repeated items if out of range
+
+        Returns:
+            a dictionary of extracted items.
+        """
+        assert num_frames_to_stack >= 0
+        assert seq_length >= 1
+
+        demo_length = self._demo_id_to_demo_length[demo_id]
+        assert index_in_demo < demo_length
+
+        # determine begin and end of sequence
+        seq_begin_index = max(0, index_in_demo - num_frames_to_stack)
+        seq_end_index = min(demo_length, index_in_demo + seq_length)
+
+        # determine sequence padding
+        seq_begin_pad = max(0, num_frames_to_stack - index_in_demo)  # pad for frame stacking
+        seq_end_pad = max(0, index_in_demo + seq_length - demo_length)  # pad for sequence length
+
+        if action_padding_len is not None:
+            seq_end_pad = action_padding_len + 1
+            seq_end_index = seq_end_index - action_padding_len - 1
+
+        # make sure we are not padding if specified.
+        if not self.pad_frame_stack:
+            assert seq_begin_pad == 0
+        if not self.pad_seq_length:
+            assert seq_end_pad == 0
+
+        # fetch observation from the dataset file
+        seq = dict()
+        for k in keys:
+            data = self.get_dataset_for_ep(demo_id, k)
+            # Dont make strings floats
+            if "raw" not in k:
+                seq[k] = data[seq_begin_index: seq_end_index].astype("float32")
+            else:
+                seq[k] = data[seq_begin_index: seq_end_index].astype("string_")
+        
+        seq = TensorUtils.pad_sequence(seq, padding=(seq_begin_pad, seq_end_pad), pad_same=True)
+        pad_mask = np.array([0] * seq_begin_pad + [1] * (seq_end_index - seq_begin_index) + [0] * seq_end_pad)
+        pad_mask = pad_mask[:, None].astype(np.bool_)
+
+        return seq, pad_mask
+    
+
+    def get_item(self, index):
+        """
+        Main implementation of getitem when not using cache.
+        """
+
+        demo_id = self._index_to_demo_id[index]
+        demo_start_index = self._demo_id_to_start_indices[demo_id]
+        demo_length = self._demo_id_to_demo_length[demo_id]
+
+        # start at offset index if not padding for frame stacking
+        demo_index_offset = 0 if self.pad_frame_stack else (self.n_frame_stack - 1)
+        index_in_demo = index - demo_start_index + demo_index_offset
+
+        # end at offset index if not padding for seq length
+        demo_length_offset = 0 if self.pad_seq_length else (self.seq_length - 1)
+        end_index_in_demo = demo_length - demo_length_offset
+        
+        meta = self.get_dataset_sequence_from_demo(
+            demo_id,
+            index_in_demo=index_in_demo,
+            keys=self.dataset_keys,
+            num_frames_to_stack=self.n_frame_stack - 1,
+            seq_length=self.seq_length,
+        )
+
+        # determine goal index
+        goal_index = None
+        action_padding_len = None
+        if self.goal_mode == "last":
+            goal_index = end_index_in_demo - 1
+        elif self.goal_mode == "geom":
+            assert self.truncated_geom_factor is not None
+            num_options = end_index_in_demo - 1 - index_in_demo
+            if num_options <= self.seq_length:
+                goal_index = end_index_in_demo - 1
+            else: 
+                geom_sample_index = 1 + int(truncated_geometric(p=self.truncated_geom_factor / num_options, truncate_threshold=num_options-1, size=1))
+                goal_index = index_in_demo + geom_sample_index
+
+                # Clamp to end of demo if goal_index is too high
+                if goal_index >= end_index_in_demo:
+                    goal_index = end_index_in_demo - 1
+                elif geom_sample_index <= self.seq_length:
+                    # If it happens that you sample a goal_index within seq_length away from the current index, compute appropriate action padding
+                    action_padding_len = self.seq_length - geom_sample_index - 1
+
+        meta["obs"] = self.get_obs_sequence_from_demo(
+            demo_id,
+            index_in_demo=index_in_demo,
+            keys=self.obs_keys,
+            num_frames_to_stack=self.n_frame_stack - 1,
+            seq_length=self.seq_length,
+            prefix="observation",
+            action_padding_len=action_padding_len
+        )
+
+        if self.load_next_obs:
+            meta["next_obs"] = self.get_obs_sequence_from_demo(
+                demo_id,
+                index_in_demo=index_in_demo,
+                keys=self.obs_keys,
+                num_frames_to_stack=self.n_frame_stack - 1,
+                seq_length=self.seq_length,
+                prefix="next_obs"
+            )
+
+        if goal_index is not None:
+            goal = self.get_obs_sequence_from_demo(
+                demo_id,
+                index_in_demo=goal_index,
+                keys=self.obs_keys,
+                num_frames_to_stack=0,
+                seq_length=1,
+                prefix="next_obs" if self.load_next_obs else "observation",
+            )
+
+            image_keys = [k for k in goal.keys() if "camera/image" in k]
+            for k in image_keys:
+                obs_image = meta['obs'][k]
+                N, H, W, C = obs_image.shape
+                goal_image = goal[k]
+                meta['obs'][k] = np.concatenate([obs_image, goal_image.repeat(N, 0)], axis = -1)
+
+        # get action components
+        ac_dict = OrderedDict()
+        for k in self.action_keys:
+            ac = meta[k]
+            # expand action shape if needed
+            if len(ac.shape) == 1:
+                ac = ac.reshape(-1, 1)
+            ac_dict[k] = ac
+       
+        # normalize actions
+        # if "oxe_hdf5" not in self.hdf5_path: # IF ONLY NORMALIZING IN DOMAIN 
+        action_normalization_stats = self.get_action_normalization_stats()
+        ac_dict = ObsUtils.normalize_dict(ac_dict, normalization_stats=action_normalization_stats)
+
+        # concatenate all action components
+        meta["actions"] = AcUtils.action_dict_to_vector(ac_dict)
+
+        # keys to reshape
+        for k in meta["obs"]:
+            if len(meta["obs"][k].shape) == 1:
+                meta["obs"][k] = np.expand_dims(meta["obs"][k], axis=1)
+
+        # also return the sampled index
+        meta["index"] = index
+
+        ## Moves instructions from numpy strings to a normal list of strings and does some cleanup
+        for k in meta['obs'].keys():
+            if "raw" in k:
+                meta['obs'][k] = [str(s[0])[2:-1] for s in meta['obs'][k]]
+        return meta
+
+    def get_sequence_from_demo(self, demo_id, index_in_demo, keys, num_frames_to_stack=0, seq_length=1, action_padding_len=None):
+        """
+        Extract a (sub)sequence of data items from a demo given the @keys of the items.
+
+        Args:
+            demo_id (str): id of the demo, e.g., demo_0
+            index_in_demo (int): beginning index of the sequence wrt the demo
+            keys (tuple): list of keys to extract
+            num_frames_to_stack (int): numbers of frame to stack. Seq gets prepended with repeated items if out of range
+            seq_length (int): sequence length to extract. Seq gets post-pended with repeated items if out of range
+
+        Returns:
+            a dictionary of extracted items.
+        """
+        assert num_frames_to_stack >= 0
+        assert seq_length >= 1
+
+        demo_length = self._demo_id_to_demo_length[demo_id]
+        assert index_in_demo < demo_length
+
+        # determine begin and end of sequence
+        seq_begin_index = max(0, index_in_demo - num_frames_to_stack)
+        seq_end_index = min(demo_length, index_in_demo + seq_length)
+
+        # determine sequence padding
+        seq_begin_pad = max(0, num_frames_to_stack - index_in_demo)  # pad for frame stacking
+        seq_end_pad = max(0, index_in_demo + seq_length - demo_length)  # pad for sequence length
+
+        if action_padding_len is not None:
+            seq_end_pad = action_padding_len + 1
+            seq_end_index = seq_end_index - action_padding_len - 1
+
+        # make sure we are not padding if specified.
+        if not self.pad_frame_stack:
+            assert seq_begin_pad == 0
+        if not self.pad_seq_length:
+            assert seq_end_pad == 0
+
+        # fetch observation from the dataset file
+        seq = dict()
+        for k in keys:
+            data = self.get_dataset_for_ep(demo_id, k)
+            # Dont make strings floats
+            if "raw" not in k:
+                seq[k] = data[seq_begin_index: seq_end_index].astype("float32")
+            else:
+                seq[k] = data[seq_begin_index: seq_end_index].astype("string_")
+        
+        seq = TensorUtils.pad_sequence(seq, padding=(seq_begin_pad, seq_end_pad), pad_same=True)
+        pad_mask = np.array([0] * seq_begin_pad + [1] * (seq_end_index - seq_begin_index) + [0] * seq_end_pad)
+        pad_mask = pad_mask[:, None].astype(np.bool_)
+
+        return seq, pad_mask
+    
 class MetaDataset(torch.utils.data.Dataset):
     def __init__(
         self,
