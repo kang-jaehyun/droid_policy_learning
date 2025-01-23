@@ -295,6 +295,21 @@ def train(config, device):
         from robomimic.utils.file_utils import maybe_dict_from_checkpoint
         ckpt_dict = maybe_dict_from_checkpoint(ckpt_path=ckpt_path)
         model.deserialize(ckpt_dict["model"])
+        
+        print("Found action normalization stats in checkpoint, loading them in.")
+        action_normalization_stats_in_ckpt = ckpt_dict["action_normalization_stats"]
+        
+        for key in action_normalization_stats_in_ckpt:
+            target = action_normalization_stats_in_ckpt[key]
+            if isinstance(target, list):
+                action_normalization_stats_in_ckpt[key] = np.array(target)
+            else:
+                for subkey in target:
+                    action_normalization_stats_in_ckpt[key][subkey] = np.array(target[subkey])
+        trainset.set_action_normalization_stats(action_normalization_stats_in_ckpt)
+        action_normalization_stats = action_normalization_stats_in_ckpt
+        print("Set action normalization stats to: {}".format(action_normalization_stats_in_ckpt))
+        
 
     print("\n============= Model Summary =============")
     print(model)  # print model summary
