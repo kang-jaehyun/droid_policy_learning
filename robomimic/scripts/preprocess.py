@@ -6,14 +6,15 @@ import matplotlib.pyplot as plt
 from glob import glob
 import torch
 import robomimic.utils.torch_utils as TorchUtils
+from robomimic.utils.rlds_utils import euler_to_rmat, mat_to_rot6d
 from tqdm import tqdm
 import cv2
 
-base_dir = '/workspace/datasets/droid_custom'
+base_dir = '/workspace/datasets/droid_scene2'
 
 # search for all h5
 base_h5_file_path = glob(os.path.join(base_dir, '**/trajectory.h5'), recursive=True)
-target_h5_file_path = [path.replace('.h5', '_new.h5') for path in base_h5_file_path]
+target_h5_file_path = [path.replace('.h5', '_prep.h5') for path in base_h5_file_path]
 
 
 # TODO
@@ -34,12 +35,14 @@ for i, (base_path, target_path) in tqdm(enumerate(zip(base_h5_file_path, target_
         # 1. cartesian -> abs_pos, abs_rot_6d
         cartesian = f['action/cartesian_position'][:]
         abs_pos = cartesian[:,:3].astype(np.float64)
-        abs_rot = cartesian[:,3:6].astype(np.float64) # in euler format
-        rot_ = torch.from_numpy(abs_rot)
-        abs_rot_6d = TorchUtils.euler_angles_to_rot_6d(
-            rot_, convention="XYZ",
-        ) 
-        abs_rot_6d = abs_rot_6d.numpy().astype(np.float64)
+        abs_rot = cartesian[:,3:6].astype(np.float64)
+        abs_rot_6d = mat_to_rot6d(euler_to_rmat(abs_rot))
+        # in euler format
+        # rot_ = torch.from_numpy(abs_rot)
+        # abs_rot_6d = TorchUtils.euler_angles_to_rot_6d(
+        #     rot_, convention="XYZ",
+        # ) 
+        abs_rot_6d = np.array(abs_rot_6d).astype(np.float64)
         gripper_position = f['action/gripper_position'][:]
         
         del f['action/gripper_position']
