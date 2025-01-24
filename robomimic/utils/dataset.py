@@ -1035,8 +1035,8 @@ class DROIDDataset(SequenceDataset):
                 aug_skill = np.load(skill_path)
                 meta["goal"]["skill"] = aug_skill[index_in_demo]
             else:
-                base_skill_path = os.path.join(self.skill_dir, task_name, demo_id, 'base.npy')
-                base_skill = np.load(base_skill_path)
+                skill_path = os.path.join(self.skill_config.dir, task_name, f'7996348764_{demo_id}', 'base.npy')
+                base_skill = np.load(skill_path)
                 meta["goal"]["skill"] = base_skill[index_in_demo]
                 
         if self.subgoal_config.enabled:
