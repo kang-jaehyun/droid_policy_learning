@@ -157,8 +157,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
         ema = None
         if self.algo_config.ema.enabled:
             # ema = EMAModel(model=nets, power=self.algo_config.ema.power)
-            params = list(nets['policy']['obs_encoder'].parameters()) + list(nets['policy']['noise_pred_net'].parameters())
-            ema = EMAModel(model=nets, power=self.algo_config.ema.power, parameters=params)
+            ema = EMAModel(nets.parameters(), model_cls=nets, power=self.algo_config.ema.power)
                 
         # set attrs
         self.nets = nets
@@ -514,7 +513,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
                 continue
             # first two dimensions should be [B, T] for inputs
             assert inputs['obs'][k].ndim - 2 == len(self.obs_shapes[k])
-        obs_features = TensorUtils.time_distributed({"obs":inputs["obs"]}, nets['policy']['obs_encoder'].module, inputs_as_kwargs=True)
+        obs_features = TensorUtils.time_distributed(inputs, self.nets['policy']['obs_encoder'], inputs_as_kwargs=True)
         assert obs_features.ndim == 3  # [B, T, D]
         B = obs_features.shape[0]
 
