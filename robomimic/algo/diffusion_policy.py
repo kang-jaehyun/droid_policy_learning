@@ -156,7 +156,9 @@ class DiffusionPolicyUNet(PolicyAlgo):
         # setup EMA
         ema = None
         if self.algo_config.ema.enabled:
-            ema = EMAModel(model=nets, power=self.algo_config.ema.power)
+            # ema = EMAModel(model=nets, power=self.algo_config.ema.power)
+            params = list(nets['policy']['obs_encoder'].parameters()) + list(nets['policy']['noise_pred_net'].parameters())
+            ema = EMAModel(model=nets, power=self.algo_config.ema.power, parameters=params)
                 
         # set attrs
         self.nets = nets
