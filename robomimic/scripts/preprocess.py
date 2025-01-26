@@ -13,12 +13,11 @@ from robomimic.utils.rlds_utils import euler_to_rmat, mat_to_rot6d
 from tqdm import tqdm
 import cv2
 
-
-base_dir = '/workspace/datasets/droid_custom'
+base_dir = '/workspace/datasets/droid_scene2'
 
 # search for all h5
 base_h5_file_path = glob(os.path.join(base_dir, '**/trajectory.h5'), recursive=True)
-target_h5_file_path = [path.replace('.h5', '_new.h5') for path in base_h5_file_path]
+target_h5_file_path = [path.replace('.h5', '_prep.h5') for path in base_h5_file_path]
 
 
 # TODO

@@ -1028,14 +1028,14 @@ class DROIDDataset(SequenceDataset):
             if self.skill_config.aug_num > 0:
                 aug_idx = random.randint(0, self.skill_config.aug_num)
                 if aug_idx == self.skill_config.aug_num:
-                    skill_path = os.path.join(self.skill_config.dir, task_name, f'7996348764_{demo_id}', 'base.npy')
+                    skill_path = os.path.join(self.skill_config.dir, task_name, f'975691512_{demo_id}', 'base.npy')
                 else:
-                    skill_path = os.path.join(self.skill_config.dir, task_name, f'7996348764_{demo_id}', 'aug_{}.npy'.format(aug_idx))
+                    skill_path = os.path.join(self.skill_config.dir, task_name, f'975691512_{demo_id}', 'aug_{}.npy'.format(aug_idx))
                 
                 aug_skill = np.load(skill_path)
                 meta["goal"]["skill"] = aug_skill[index_in_demo]
             else:
-                skill_path = os.path.join(self.skill_config.dir, task_name, f'7996348764_{demo_id}', 'base.npy')
+                skill_path = os.path.join(self.skill_config.dir, task_name, f'975691512_{demo_id}', 'base.npy')
                 base_skill = np.load(skill_path)
                 meta["goal"]["skill"] = base_skill[index_in_demo]
                 
