@@ -544,7 +544,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
 
         for k in self.noise_scheduler.timesteps:
             # predict noise
-            noise_pred = nets['policy']['noise_pred_net'].module(
+            noise_pred = self.nets['policy']['noise_pred_net'].module(
                 sample=naction, 
                 timestep=k,
                 global_cond=obs_cond
