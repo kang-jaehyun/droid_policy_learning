@@ -444,14 +444,14 @@ class DiffusionPolicyUNet(PolicyAlgo):
             else:
                 # Reads in current language instruction from file and fills the appropriate obs key, only will
                 # actually use it if the policy uses language instructions
-                with open(os.path.join(root_path, "lang_command.txt"), 'r') as file:
-                    raw_lang = file.read()
+                # with open(os.path.join(root_path, "lang_command.txt"), 'r') as file:
+                #     raw_lang = file.read()
 
-                encoded_input = tokenizer(raw_lang, return_tensors='pt').to('cuda')
-                outputs = lang_model(**encoded_input)
-                encoded_lang = outputs.last_hidden_state.sum(1).squeeze().unsqueeze(0).repeat(To, 1).unsqueeze(0)
-                obs_dict["lang_fixed/language_distilbert"] = encoded_lang.type(torch.float32)
-
+                # encoded_input = tokenizer(raw_lang, return_tensors='pt').to('cuda')
+                # outputs = lang_model(**encoded_input)
+                # encoded_lang = outputs.last_hidden_state.sum(1).squeeze().unsqueeze(0).repeat(To, 1).unsqueeze(0)
+                # obs_dict["lang_fixed/language_distilbert"] = encoded_lang.type(torch.float32)
+                pass
         ###############################
 
         # TODO: obs_queue already handled by frame_stack

@@ -690,7 +690,8 @@ class RolloutPolicy(object):
         Args:
             ob (dict): single observation dictionary from environment (no batch dimension, 
                 and np.array values for each key)
-            goal (dict): goal observation
+            skill (torch.tensor) : skill vector (1,1,64)
+            goal (torch.tensor) : goal image (1, H, W, C) i.e. (1, 180, 320, 3)
         """
         ob = self._prepare_observation(ob)
         if goal is not None:
@@ -711,7 +712,7 @@ class RolloutPolicy(object):
                     if conversion_format == "rot_axis_angle":
                         rot = TorchUtils.rot_6d_to_axis_angle(rot_6d=rot_6d).squeeze().numpy()
                     elif conversion_format == "rot_euler":
-                        rot = TorchUtils.rot_6d_to_euler_angles(rot_6d=rot_6d, convention="XYZ").squeeze().numpy()
+                        rot = TorchUtils.rot_6d_to_euler_angles(rot_6d=rot_6d).squeeze().numpy()
                     else:
                         raise ValueError
                     ac_dict[key] = rot
